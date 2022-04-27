@@ -30,7 +30,7 @@ func TestClient_GetAccessToken(t *testing.T) {
 	t.Log(token)
 }
 
-func TestClient_ListExtcontact(t *testing.T) {
+func TestClient_ListExtContact(t *testing.T) {
 	cli := newClient()
 	contacts, err := cli.ListExtContact(context.TODO(), &api.ListExContactRequest{Pager: api.Pager{Size: 20}})
 	if err != nil {
@@ -140,6 +140,31 @@ func TestClient_GetUserCount(t *testing.T) {
 	out, err := cli.GetUserCount(context.TODO(), &api.GetUserCountRequest{})
 	if err != nil {
 		t.Errorf("get user count: %v", err)
+	}
+	t.Log(out)
+}
+
+func TestClient_GetUserAccessToken(t *testing.T) {
+	cli := newClient()
+	out, err := cli.GetUserAccessToken(context.TODO(), &api.GetUserAccessTokenRequest{
+		Code:         "580dfd7103ad3f839d033d74efbb63b6",
+		RefreshToken: "580dfd7103ad3f839d033d74efbb63b6",
+		GrantType:    "authorization_code",
+	})
+	if err != nil {
+		t.Errorf("get user token: %v", err)
+	}
+	t.Log(out)
+}
+
+func TestClient_GetContactUser(t *testing.T) {
+	cli := newClient()
+	out, err := cli.GetContactUser(context.TODO(), &api.GetContactUserRequest{
+		Token:   "0269d878c58e36f28dc27e002a83258a",
+		UnionId: "me",
+	})
+	if err != nil {
+		t.Errorf("get contact user: %v", err)
 	}
 	t.Log(out)
 }

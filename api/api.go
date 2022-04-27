@@ -38,6 +38,12 @@ const (
 
 	// URLGetUserCount (v1 - post) 获取员工人数
 	URLGetUserCount = "https://oapi.dingtalk.com/topapi/user/count"
+
+	// URLGETUserAccessToken (v1 - post) 获取用户 token
+	URLGETUserAccessToken = "https://api.dingtalk.com/v1.0/oauth2/userAccessToken"
+
+	// URLGETContactUser (v1 - get) 获取用户通讯录个人信息
+	URLGETContactUser = "https://api.dingtalk.com/v1.0/contact/users/"
 )
 
 type AccessToken struct {

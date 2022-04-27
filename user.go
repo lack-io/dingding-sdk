@@ -113,3 +113,45 @@ func (c *Client) GetUserCount(ctx context.Context, req *api.GetUserCountRequest)
 
 	return rsp.Count, nil
 }
+
+// GetUserAccessToken 获取用户 Token
+func (c *Client) GetUserAccessToken(ctx context.Context, req *api.GetUserAccessTokenRequest) (*api.GetUserAccessTokenResponse, error) {
+	uri, err := url.Parse(api.URLGETUserAccessToken)
+	if err != nil {
+		return nil, err
+	}
+
+	if req.ClientId == "" {
+		req.ClientId = c.options.appKey
+	}
+	if req.ClientSecret == "" {
+		req.ClientSecret = c.options.appSecret
+	}
+
+	rsp := api.GetUserAccessTokenResponse{}
+
+	err = c.fetchV1(ctx, "POST", uri, map[string]string{}, req, &rsp)
+	if err != nil {
+		return nil, err
+	}
+	return &rsp, nil
+}
+
+// GetContactUser 获取用户通讯录个人信息
+func (c *Client) GetContactUser(ctx context.Context, req *api.GetContactUserRequest) (*api.GetContactUserResponse, error) {
+
+	uri, err := url.Parse(api.URLGETContactUser + req.UnionId)
+	if err != nil {
+		return nil, err
+	}
+	header := map[string]string{
+		"x-acs-dingtalk-access-token": req.Token,
+	}
+	rsp := api.GetContactUserResponse{}
+
+	err = c.fetchV1(ctx, "GET", uri, header, req, &rsp)
+	if err != nil {
+		return nil, err
+	}
+	return &rsp, nil
+}

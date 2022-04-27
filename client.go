@@ -3,6 +3,7 @@ package dingding
 import (
 	"bytes"
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -40,7 +41,10 @@ func NewClient(opts ...Option) *Client {
 
 	transport := &http.Transport{
 		WriteBufferSize: options.writeSize,
-		ReadBufferSize:  options.readSize,
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: true,
+		},
+		ReadBufferSize: options.readSize,
 	}
 
 	cli.conn = &http.Client{
@@ -159,7 +163,7 @@ func (c *Client) retryV0(
 // fetchV0 支持钉钉旧版接口
 func (c *Client) fetchV0(
 	ctx context.Context, method string, uri *url.URL,
-	payload interface{}, result *api.ResultV0,
+	payload, result interface{},
 ) error {
 	data, err := json.Marshal(payload)
 	if err != nil {
@@ -181,7 +185,7 @@ func (c *Client) fetchV0(
 	defer rsp.Body.Close()
 
 	body, err := ioutil.ReadAll(rsp.Body)
-	if err != nil {
+	if err != nil || rsp.StatusCode != 200 {
 		return err
 	}
 
@@ -189,8 +193,58 @@ func (c *Client) fetchV0(
 	if err != nil {
 		return fmt.Errorf("bad response body: %v", err)
 	}
-	if err = ParseResultV0(result); err != nil {
+	if v, ok := result.(*api.ResultV0); ok {
+		if err = ParseResultV0(v); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// fetchV1 支持钉钉新版接口
+func (c *Client) fetchV1(
+	ctx context.Context, method string,
+	uri *url.URL, header map[string]string,
+	payload, result interface{},
+) error {
+	data, err := json.Marshal(payload)
+	if err != nil {
 		return err
+	}
+
+	req, err := http.NewRequest(method, uri.String(), bytes.NewBuffer(data))
+	if err != nil {
+		return err
+	}
+
+	req = req.WithContext(ctx)
+	for k, v := range header {
+		req.Header.Set(k, v)
+	}
+	if req.Header.Get("Content-Type") == "" {
+		req.Header.Set("Content-Type", "application/json")
+	}
+
+	rsp, err := c.conn.Do(req)
+	if err != nil {
+		return err
+	}
+	defer rsp.Body.Close()
+
+	body, err := ioutil.ReadAll(rsp.Body)
+	if err != nil || rsp.StatusCode != 200 {
+		e, ok := ParseErrV1(body)
+		if ok {
+			return e
+		}
+
+		return err
+	}
+
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		return fmt.Errorf("bad response body: %v", err)
 	}
 
 	return nil

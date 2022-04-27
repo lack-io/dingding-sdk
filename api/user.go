@@ -292,3 +292,75 @@ type GetUserCountRequest struct {
 type GetUserCountResponse struct {
 	Count int32 `json:"count,omitempty"`
 }
+
+// GetUserAccessTokenRequest 获取用户 token
+// https://open.dingtalk.com/document/orgapp-server/obtain-user-token
+type GetUserAccessTokenRequest struct {
+	// +required
+	ClientId string `json:"clientId"`
+
+	// +required
+	ClientSecret string `json:"clientSecret"`
+
+	// +required
+	Code string `json:"code"`
+
+	RefreshToken string `json:"refreshToken"`
+
+	// 如果使用授权码换token，传authorization_code。
+	//
+	// 如果使用刷新token换用户token，传refresh_token。
+	// +required
+	GrantType string `json:"grantType"`
+}
+
+// GetUserAccessTokenResponse 获取用户 token
+type GetUserAccessTokenResponse struct {
+	// 生成的accessToken。
+	AccessToken string `json:"accessToken,omitempty"`
+	// 生成的refresh_token。可以使用此刷新token，定期的获取用户的accessToken
+	RefreshToken string `json:"refreshToken,omitempty"`
+	// 超时时间，单位秒。
+	ExpireIn int64 `json:"expireIn,omitempty"`
+	// 所选企业corpId。
+	CorpId string `json:"corpId,omitempty"`
+}
+
+func (r GetUserAccessTokenResponse) String() string {
+	data, _ := json.Marshal(r)
+	return string(data)
+}
+
+// GetContactUserRequest 获取用户通讯录个人信息
+// https://open.dingtalk.com/document/orgapp-server/dingtalk-retrieve-user-information
+type GetContactUserRequest struct {
+	// 调用服务端接口的授权凭证。使用个人用户的accessToken
+	// +required
+	Token string
+
+	// 用户的unionId, 如需获取当前授权人的信息，unionId参数可以传me。
+	// +required
+	UnionId string
+}
+
+// GetContactUserResponse 获取用户通讯录个人信息
+type GetContactUserResponse struct {
+	Nick string `json:"nick,omitempty"`
+
+	AvatarUrl string `json:"avatarUrl,omitempty"`
+
+	Mobile string `json:"mobile,omitempty"`
+
+	OpenId string `json:"openId,omitempty"`
+
+	UnionId string `json:"unionId,omitempty"`
+
+	Email string `json:"email,omitempty"`
+
+	StateCode string `json:"stateCode,omitempty"`
+}
+
+func (r GetContactUserResponse) String() string {
+	data, _ := json.Marshal(r)
+	return string(data)
+}
