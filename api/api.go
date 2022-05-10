@@ -44,6 +44,9 @@ const (
 
 	// URLGETContactUser (v1 - get) 获取用户通讯录个人信息
 	URLGETContactUser = "https://api.dingtalk.com/v1.0/contact/users/"
+
+	// URLGETAuthInfos (v1 - get) 获取企业认证信息
+	URLGETAuthInfos = "https://api.dingtalk.com/v1.0/contact/organizations/authInfos"
 )
 
 type AccessToken struct {

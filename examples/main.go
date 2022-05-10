@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 
@@ -22,7 +23,18 @@ func main() {
 		DeptId:   1,
 		Language: "zh_CN",
 	}
-	rsp, err := cli.ListDepartment(context.TODO(), req)
+
+	ctx := context.TODO()
+	tok, _ := cli.GetAccessToken(ctx)
+	fmt.Println(tok)
+
+	r, err := cli.GetAuthInfos(ctx, &api.GetAuthInfosRequest{CorpId: "ding7ab5b138eeb38cd7"})
+	if err != nil {
+		log.Fatalln(err)
+	}
+	log.Println(r)
+
+	rsp, err := cli.ListDepartment(ctx, req)
 	if err != nil {
 		log.Fatalln(err)
 	}

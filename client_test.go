@@ -11,12 +11,10 @@ import (
 func newClient() *Client {
 	appKey, _ := os.LookupEnv("ddAppKey")
 	appSecret, _ := os.LookupEnv("ddAppSecret")
-	token, _ := os.LookupEnv("ddToken")
 
 	return NewClient(
 		WithAppKey(appKey),
 		WithAppSecret(appSecret),
-		WithToken(token),
 	)
 }
 
@@ -165,6 +163,17 @@ func TestClient_GetContactUser(t *testing.T) {
 	})
 	if err != nil {
 		t.Errorf("get contact user: %v", err)
+	}
+	t.Log(out)
+}
+
+func TestClient_GetAuthInfos(t *testing.T) {
+	cli := newClient()
+	out, err := cli.GetAuthInfos(context.TODO(), &api.GetAuthInfosRequest{
+		CorpId: "ding7ab5b138eeb38cd7f",
+	})
+	if err != nil {
+		t.Errorf("get auth infos: %v", err)
 	}
 	t.Log(out)
 }
