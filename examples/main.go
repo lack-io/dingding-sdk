@@ -39,4 +39,14 @@ func main() {
 		log.Fatalln(err)
 	}
 	log.Println(rsp)
+
+	users, hasMore, next, err := cli.ListUser(ctx, &api.ListUserRequest{
+		DeptId:   rsp[0].DeptId,
+		Size:     5,
+		Language: "zh_CN",
+	})
+	if err != nil {
+		log.Fatalln(err)
+	}
+	log.Println(users, hasMore, next)
 }

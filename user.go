@@ -8,11 +8,11 @@ import (
 )
 
 // ListUserSimple 获取用户简单信息
-func (c *Client) ListUserSimple(ctx context.Context, req *api.ListUserSimpleRequest) ([]*api.UserSimple, error) {
+func (c *Client) ListUserSimple(ctx context.Context, req *api.ListUserSimpleRequest) ([]*api.UserSimple, bool, int32, error) {
 
 	uri, err := url.Parse(api.URLListUserSimple)
 	if err != nil {
-		return nil, err
+		return nil, false, 0, err
 	}
 
 	if req.Language == "" {
@@ -26,10 +26,10 @@ func (c *Client) ListUserSimple(ctx context.Context, req *api.ListUserSimpleRequ
 
 	err = c.retryV0(ctx, "POST", uri, req, &result, DefaultRetryFn)
 	if err != nil {
-		return nil, err
+		return nil, false, 0, err
 	}
 
-	return users, nil
+	return users, rsp.HasMore, rsp.NextCursor, nil
 }
 
 // GetUser 获取用户完整信息
@@ -75,11 +75,11 @@ func (c *Client) ListUserId(ctx context.Context, req *api.ListUserIdRequest) ([]
 }
 
 // ListUser 获取部门用户详细信息
-func (c *Client) ListUser(ctx context.Context, req *api.ListUserRequest) ([]*api.User, error) {
+func (c *Client) ListUser(ctx context.Context, req *api.ListUserRequest) ([]*api.User, bool, int32, error) {
 
 	uri, err := url.Parse(api.URLListUser)
 	if err != nil {
-		return nil, err
+		return nil, false, 0, err
 	}
 
 	users := make([]*api.User, 0)
@@ -89,10 +89,10 @@ func (c *Client) ListUser(ctx context.Context, req *api.ListUserRequest) ([]*api
 
 	err = c.retryV0(ctx, "POST", uri, req, &result, DefaultRetryFn)
 	if err != nil {
-		return nil, err
+		return nil, false, 0, err
 	}
 
-	return users, nil
+	return users, rsp.HasMore, rsp.NextCursor, nil
 }
 
 // GetUserCount 获取员工人数
