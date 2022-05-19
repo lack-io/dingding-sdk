@@ -47,6 +47,9 @@ const (
 
 	// URLGETAuthInfos (v1 - get) 获取企业认证信息
 	URLGETAuthInfos = "https://api.dingtalk.com/v1.0/contact/organizations/authInfos"
+
+	// URLGETUserByUnionId (v1 - post) 根据用户unionId 获取用户 id
+	URLGETUserByUnionId = "https://oapi.dingtalk.com/topapi/user/getbyunionid"
 )
 
 type AccessToken struct {

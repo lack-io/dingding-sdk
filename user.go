@@ -155,3 +155,20 @@ func (c *Client) GetContactUser(ctx context.Context, req *api.GetContactUserRequ
 	}
 	return &rsp, nil
 }
+
+// GetUserByUnionId 根据用户 unionId 获取用户id
+func (c *Client) GetUserByUnionId(ctx context.Context, req *api.GetUserByUnionIdRequest) (*api.GetUserByUnionIdResponse, error) {
+
+	uri, err := url.Parse(api.URLGETUserByUnionId)
+	if err != nil {
+		return nil, err
+	}
+
+	rsp := api.GetUserByUnionIdResponse{}
+	result := api.ResultV0{Result: &rsp}
+	err = c.retryV0(ctx, "POST", uri, req, &result, DefaultRetryFn)
+	if err != nil {
+		return nil, err
+	}
+	return &rsp, nil
+}

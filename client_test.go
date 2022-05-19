@@ -87,7 +87,7 @@ func TestClient_ListParentByUser(t *testing.T) {
 
 func TestClient_ListUserSimple(t *testing.T) {
 	cli := newClient()
-	out, err := cli.ListUserSimple(context.TODO(), &api.ListUserSimpleRequest{
+	out, _, _, err := cli.ListUserSimple(context.TODO(), &api.ListUserSimpleRequest{
 		DeptId: 7957684,
 		Cursor: 0,
 		Size:   10,
@@ -122,7 +122,7 @@ func TestClient_ListUserId(t *testing.T) {
 
 func TestClient_ListUser(t *testing.T) {
 	cli := newClient()
-	out, err := cli.ListUser(context.TODO(), &api.ListUserRequest{
+	out, _, _, err := cli.ListUser(context.TODO(), &api.ListUserRequest{
 		DeptId: 7957684,
 		Cursor: 0,
 		Size:   10,
@@ -163,6 +163,17 @@ func TestClient_GetContactUser(t *testing.T) {
 	})
 	if err != nil {
 		t.Errorf("get contact user: %v", err)
+	}
+	t.Log(out)
+}
+
+func TestClient_GetUserByUnionId(t *testing.T) {
+	cli := newClient()
+	out, err := cli.GetUserByUnionId(context.TODO(), &api.GetUserByUnionIdRequest{
+		UnionId: "Jp9lIUF7pMDs5ZBGq6Qb3wiEiE",
+	})
+	if err != nil {
+		t.Errorf("get user by union id: %v", err)
 	}
 	t.Log(out)
 }

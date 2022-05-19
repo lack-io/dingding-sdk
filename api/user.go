@@ -364,3 +364,20 @@ func (r GetContactUserResponse) String() string {
 	data, _ := json.Marshal(r)
 	return string(data)
 }
+
+// GetUserByUnionIdRequest 根据用户 unionId 获取用户 id
+// https://open.dingtalk.com/document/orgapp-server/query-a-user-by-the-union-id
+type GetUserByUnionIdRequest struct {
+	UnionId string `json:"unionid"`
+}
+
+// GetUserByUnionIdResponse 返回值
+type GetUserByUnionIdResponse struct {
+	ContactType int32  `json:"contact_type"`
+	UserId      string `json:"userId"`
+}
+
+func (r GetUserByUnionIdResponse) String() string {
+	data, _ := json.Marshal(r)
+	return string(data)
+}
